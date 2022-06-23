@@ -1,0 +1,18 @@
+*{
+    box-sizing: border-box;
+}
+
+div{
+    border: 1px solid black;
+}
+
+.row{
+    min-height: 20px;
+    min-width: 20px;
+}
+
+.cell{
+    display: inline-block;
+    min-height: 20px;
+    min-width: 20px;
+}
