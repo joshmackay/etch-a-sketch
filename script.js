@@ -11,18 +11,18 @@ function createGrid(size){ //function to create a grid based on row and col valu
             let cellHeight = (GRID_WIDTH/size);
             const cell = document.createElement('div');
             cell.classList.add = 'cell';
-            cell.addEventListener('mouseover', toBlack(this));
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
+            cell.addEventListener('mouseover', function(e){
+                e.target.style.backgroundColor = 'black';
+            });
             row.appendChild(cell);
         }
         document.querySelector('#grid').appendChild(row);
     }
 }
 
-function toBlack(x){
-    console.log(x);
-}
+
 
 function changeColour(){
     console.log('fired');
@@ -39,7 +39,7 @@ function reset(){
     createGrid(16)
 }
 
-document.querySelector('body').addEventListener('load', createGrid(16));
+document.querySelector('body').addEventListener('load', createGrid(50));
 
 console.log(GRID_WIDTH);
 
