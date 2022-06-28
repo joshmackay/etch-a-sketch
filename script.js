@@ -2,6 +2,7 @@ const GRID_WIDTH = document.querySelector('#grid').offsetWidth;
 let currentGridSize = 16;
 const resetButton = document.querySelector('#reset-button').addEventListener('click', function(){createGrid(currentGridSize)});
 const setSizeButton = document.querySelector('#size-button').addEventListener('click', setSize);
+let mode = 'defualt';
 
 
 function createGrid(size){ //function to create a grid based on row and col values
@@ -17,7 +18,7 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.classList.add = 'cell';
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
-            cell.addEventListener('mouseover', function(e){
+            cell.addEventListener('mousedown', function(e){
                 e.target.style.backgroundColor = 'black';
             });
             row.appendChild(cell);
@@ -26,13 +27,13 @@ function createGrid(size){ //function to create a grid based on row and col valu
     }
 }
 
-function colourMode(mode){
-    
+function colourMode(){
+    switch:
 }
 
 function setSize(){
     const size = prompt('Set a resolution up to 100');
-    if(size != null){
+    if(size != null && size > 0 && size < 101){
         currentGridSize = size;
         createGrid(size);
     }
