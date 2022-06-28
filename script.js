@@ -26,8 +26,12 @@ function createGrid(size){ //function to create a grid based on row and col valu
     }
 }
 
+function colourMode(mode){
+    
+}
+
 function setSize(){
-    const size = prompt('Set a resolution up to 100', currentGridSize);
+    const size = prompt('Set a resolution up to 100');
     if(size != null){
         currentGridSize = size;
         createGrid(size);
