@@ -1,7 +1,11 @@
 const GRID_WIDTH = document.querySelector('#grid').offsetWidth;
-const resetButton = document.querySelector('#reset-button').addEventListener('click', reset);
+let currentGridSize = 16;
+const resetButton = document.querySelector('#reset-button').addEventListener('click', function(){createGrid(currentGridSize)});
+const setSizeButton = document.querySelector('#size-button').addEventListener('click', setSize);
+
 
 function createGrid(size){ //function to create a grid based on row and col values
+    reset();
     for(let r = 0; r < size; r++){
         const row = document.createElement('div');
         row.className = 'row';
@@ -22,7 +26,11 @@ function createGrid(size){ //function to create a grid based on row and col valu
     }
 }
 
-
+function setSize(){
+    const size = prompt('Set a resolution up to 100');
+    currentGridSize = size;
+    createGrid(size);
+}
 
 function changeColour(){
     console.log('fired');
@@ -36,10 +44,10 @@ function getRandomRGB(){
 function reset(){
     let existingElements = document.querySelector('#grid');
     existingElements.replaceChildren();
-    createGrid(16)
+    
 }
 
-document.querySelector('body').addEventListener('load', createGrid(50));
+document.querySelector('body').addEventListener('load', createGrid(16));
 
-console.log(GRID_WIDTH);
+
 
