@@ -18,17 +18,23 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.classList.add = 'cell';
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
-            cell.addEventListener('mousedown', function(e){
-                e.target.style.backgroundColor = 'black';
-            });
+            cell.addEventListener('mousedown', mouseClick);
+            cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
         }
         document.querySelector('#grid').appendChild(row);
     }
 }
 
-function colourMode(){
-    switch:
+function mouseClick(e){
+    e.target.style.backgroundColor = 'black';
+}
+
+function mouseDrag(e){
+    if(e.buttons > 0){
+        console.log(e.buttons);
+        e.target.style.backgroundColor = 'black';
+    }
 }
 
 function setSize(){
