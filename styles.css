@@ -26,6 +26,7 @@ h1{
     width: 500px;
     height: 500px;
     border: 1px solid black;
+    box-sizing: content-box;    
 }
 
 div{
@@ -33,6 +34,7 @@ div{
 }
 
 .row{
+    box-sizing: border-box;
     display: flex;
     width:auto;
     margin: 0;
@@ -41,4 +43,5 @@ div{
 
 .cell{
     display: inline-block;
+    box-sizing: border-box;
 }
