@@ -29,9 +29,7 @@ h1{
     box-sizing: content-box;    
 }
 
-div{
-    /* border: 1px solid black; */
-}
+
 
 .row{
     box-sizing: border-box;

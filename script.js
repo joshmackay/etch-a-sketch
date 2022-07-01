@@ -9,6 +9,7 @@ const rgbButton = document.querySelector('#rgb-button').addEventListener('click'
 const transparentButton = document.querySelector('#transparent').addEventListener('click', transparentMode);
 
 let rgbOn = false;
+let bgColour = '#ffffff';
 let transparentOn = false;
 let eraseMode = false;
 let currentColour = `hsl(0,0,0,1)`;
@@ -28,7 +29,7 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.classList.add = 'cell';
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
-            cell.style.backgroundColor = 'rgba(255,255,255,0)'
+            cell.style.backgroundColor = 'transparent'
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
@@ -135,6 +136,23 @@ function clear(){
     existingElements.replaceChildren();
     
 }
-console.log('front');
+
+function RGBToHex(r,g,b) {
+    r = r.toString(16);
+    console.log(r);
+    g = g.toString(16);
+    b = b.toString(16);
+  
+    if (r.length == 1)
+      r = "0" + r;
+    if (g.length == 1)
+      g = "0" + g;
+    if (b.length == 1)
+      b = "0" + b;
+  
+    return "#" + r + g + b;
+  }
+
 window.addEventListener('load', initialise);
-console.log('back');
+
+console.log(RGBToHex(100,200, 50));
