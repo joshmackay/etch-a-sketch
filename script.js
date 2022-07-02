@@ -8,11 +8,11 @@ const defaultButton = document.querySelector('#default-button').addEventListener
 const rgbButton = document.querySelector('#rgb-button').addEventListener('click', rgbMode);
 const transparentButton = document.querySelector('#transparent').addEventListener('click', transparentMode);
 
-let rgbOn = false;
 let bgColour = '#ffffff';
+let rgbOn = false;
 let transparentOn = false;
 let eraseMode = false;
-let currentColour = `hsl(0,0,0,1)`;
+let currentPaintColour = `#000000`;
 let functionMode = 'default';
 
 
@@ -29,7 +29,8 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.classList.add = 'cell';
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
-            cell.style.backgroundColor = 'transparent'
+            cell.setAttribute('draggable', 'false');
+            //cell.style.backgroundColor = 'transparent';
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
@@ -39,14 +40,15 @@ function createGrid(size){ //function to create a grid based on row and col valu
 }
 
 function initialise(){
-    currentColour = 'rgba(0,0,0,1)';
+    currentPaintColour = '#000000';
     rgbOn = false;
     createGrid(DEFAULT_GRID_SIZE);
 }
 
 function setDefault(){
-    currentColour = 'rgba(0,0,0,1)';
+    currentPaintColour = '#000000';
     rgbOn = false;
+    transparentOn = false;
 }
 
 function mouseClick(e){
@@ -60,39 +62,40 @@ function mouseClick(e){
             e.target.style.backgroundColor = newBG;
         }
     } else{
-        e.target.style.backgroundColor = 'hsl(0,0%,0%,1)';
+        e.target.style.backgroundColor = currentPaintColour;
+        console.log('clilc');
     } 
 }
 
 function mouseDrag(e){
     if(e.buttons > 0){
         if(rgbOn){
-            currentColour = setRGBColour();
-            e.target.style.backgroundColor = currentColour;     
+            e.target.style.backgroundColor = setRGBColour();     
         } 
-        else if(transparentOn){
-            let alpha = getAlphaValue(e.target.style.backgroundColor);
-            if(alpha < 1){
-                let newBG = increaseTrans(e.target.style.backgroundColor);
-                console.log(newBG)
-                e.target.style.backgroundColor = newBG;
-            }
-        }
-        else e.target.style.backgroundColor = 'hsl(0,0%,0%,1)';
+        // else if(transparentOn){
+        //     let alpha = getAlphaValue(e.target.style.backgroundColor);
+        //     if(alpha < 1){
+        //         let newBG = increaseTrans(e.target.style.backgroundColor);
+        //         console.log(newBG)
+        //         e.target.style.backgroundColor = newBG;
+        //     }
+        // }
+        else e.target.style.backgroundColor = currentPaintColour;
+        console.log('drag');
     }
 }
 
 function rgbMode(){
     if(rgbOn){
         rgbOn = false;
-        currentColour = 'hsl(0,0,0,1)';
+        currentPaintColour = 'hsl(0,0,0,1)';
     }else rgbOn = true;
 }
 
 function setRGBColour(){
     let randomHue = Math.floor(Math.random()*360);
-    currentColour = `hsl(${randomHue}, 100%, 50%)`;
-    return currentColour;
+    currentPaintColour = `hsl(${randomHue}, 100%, 50%)`;
+    return currentPaintColour;
 }
 
 function transparentMode(){
@@ -122,37 +125,37 @@ function setSize(){
     }
 }
 
-function changeColour(){
-    console.log('fired');
-}
-
-function getRandomRGB(){
-    return `rgb(${Math.floor( Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)})`
-    
-}
-
 function clear(){
     let existingElements = document.querySelector('#grid');
+    existingElements.style.backgroundColor = bgColour;
     existingElements.replaceChildren();
     
 }
 
-function RGBToHex(r,g,b) {
-    r = r.toString(16);
-    console.log(r);
-    g = g.toString(16);
-    b = b.toString(16);
-  
-    if (r.length == 1)
-      r = "0" + r;
-    if (g.length == 1)
-      g = "0" + g;
-    if (b.length == 1)
-      b = "0" + b;
-  
-    return "#" + r + g + b;
-  }
+// function HSLtoHEX(h,s,l){
+//     s /= 100;
+//     l /= 100;
+//     const k = n => (n + h / 30) % 12;
+//     const a = s * Math.min(l, 1 - l);
+//     const f = n =>
+//         l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+//     const r = Math.round(255 * f(0)); 
+//     const g = Math.round(255 * f(8)); 
+//     const b = Math.round(255 * f(4));
+
+//     r = r.toString(16);
+//     g = g.toString(16);
+//     b = b.toString(16);
+
+//     if (r.length == 1)
+//         r = "0" + r;
+//     if (g.length == 1)
+//         g = "0" + g;
+//     if (b.length == 1)
+//         b = "0" + b;
+
+//     return "#" + r + g + b;
+
+// }
 
 window.addEventListener('load', initialise);
-
-console.log(RGBToHex(100,200, 50));
