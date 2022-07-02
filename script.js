@@ -21,7 +21,7 @@ function createGrid(size){ //function to create a grid based on row and col valu
     for(let r = 0; r < size; r++){
         const row = document.createElement('div');
         row.className = 'row';
-        
+        row.setAttribute('draggable','false');
         for(let c = 0; c < size; c++){
             let cellWidth = ((GRID_WIDTH-2)/size);
             let cellHeight = ((GRID_WIDTH-2)/size);
@@ -30,7 +30,7 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
             cell.setAttribute('draggable', 'false');
-            //cell.style.backgroundColor = 'transparent';
+            cell.style.backgroundColor = 'transparent';
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
@@ -52,6 +52,7 @@ function setDefault(){
 }
 
 function mouseClick(e){
+    e.preventDefault();
     if(rgbOn){
         e.target.style.backgroundColor = setRGBColour();
     } else if(transparentOn){
@@ -72,16 +73,15 @@ function mouseDrag(e){
         if(rgbOn){
             e.target.style.backgroundColor = setRGBColour();     
         } 
-        // else if(transparentOn){
-        //     let alpha = getAlphaValue(e.target.style.backgroundColor);
-        //     if(alpha < 1){
-        //         let newBG = increaseTrans(e.target.style.backgroundColor);
-        //         console.log(newBG)
-        //         e.target.style.backgroundColor = newBG;
-        //     }
-        // }
+        else if(transparentOn){
+            let alpha = getAlphaValue(e.target.style.backgroundColor);
+            if(alpha < 1){
+                let newBG = increaseTrans(e.target.style.backgroundColor);
+                console.log(newBG)
+                e.target.style.backgroundColor = newBG;
+            }
+        }
         else e.target.style.backgroundColor = currentPaintColour;
-        console.log('drag');
     }
 }
 

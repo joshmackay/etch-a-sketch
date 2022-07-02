@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
-<body>
-    <div class="col-container">
+<body draggable="false">
+    <div class="col-container" draggable="false">
         <h1>ETCH-A-SKETCH</h1>
         <div id="controls">
             <button id="size-button">Set Size</button>
@@ -19,8 +19,6 @@
             <button id="colour-button">Colour</button>
             <button id="erase-button">Erase</button>
             <button id="clear-button">Clear</button>
-
-
         </div>
 
         <div id="grid" draggable="false"></div>
