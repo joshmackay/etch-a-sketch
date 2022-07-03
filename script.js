@@ -9,6 +9,7 @@ const rgbButton = document.querySelector('#rgb-button').addEventListener('click'
 const shadingButton = document.querySelector('#shading').addEventListener('click', shadingMode);
 const lightenButton = document.querySelector('#lighten').addEventListener('click', lightenMode);
 const eraseButton = document.querySelector('#erase-button').addEventListener('click', eraseMode);
+const colourPicker = document.querySelector('#color').addEventListener('change', colourPickerValue);
 
 let bgColour = 'hsl(0,100%,100%)';
 let rgbOn = false;
@@ -53,6 +54,7 @@ function setDefault(){
     rgbOn = false;
     darkenOn = false;
     lightenOn = false;
+    eraseOn = false;
 }
 
 function mouseClick(e){
@@ -155,6 +157,11 @@ function setSize(){
         currentGridSize = size;
         createGrid(size);
     }
+}
+
+function colourPickerValue(e){
+    setDefault();
+    currentPaintColour = e.target.value;
 }
 
 function clear(){
