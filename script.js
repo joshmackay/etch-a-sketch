@@ -1,18 +1,21 @@
 const GRID_WIDTH = document.querySelector('#grid').offsetWidth;
 const DEFAULT_GRID_SIZE = 16;
-const DEFAULT_BG_COLOUR = 'rgba(255,255,255,1)';
+const DEFAULT_BG_COLOUR = 'hsl(0,100%,100%)';
 let currentGridSize = 16;
 const clearButton = document.querySelector('#clear-button').addEventListener('click', function(){createGrid(currentGridSize)});
 const setSizeButton = document.querySelector('#size-button').addEventListener('click', setSize);
 const defaultButton = document.querySelector('#default-button').addEventListener('click', setDefault);
 const rgbButton = document.querySelector('#rgb-button').addEventListener('click', rgbMode);
-const transparentButton = document.querySelector('#transparent').addEventListener('click', transparentMode);
+const shadingButton = document.querySelector('#shading').addEventListener('click', shadingMode);
+const lightenButton = document.querySelector('#lighten').addEventListener('click', lightenMode);
+const eraseButton = document.querySelector('#erase-button').addEventListener('click', eraseMode);
 
-let bgColour = '#ffffff';
+let bgColour = 'hsl(0,100%,100%)';
 let rgbOn = false;
-let transparentOn = false;
-let eraseMode = false;
-let currentPaintColour = `#000000`;
+let darkenOn = false;
+let lightenOn = false;
+let eraseOn = false;
+let currentPaintColour = `hsl(0,0%, 0%)`;
 let functionMode = 'default';
 
 
@@ -29,8 +32,8 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.classList.add = 'cell';
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
+            cell.style.backgroundColor = bgColour;
             cell.setAttribute('draggable', 'false');
-            cell.style.backgroundColor = 'transparent';
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
@@ -40,31 +43,35 @@ function createGrid(size){ //function to create a grid based on row and col valu
 }
 
 function initialise(){
-    currentPaintColour = '#000000';
+    currentPaintColour = 'hsl(0,0%,0%)';
     rgbOn = false;
     createGrid(DEFAULT_GRID_SIZE);
 }
 
 function setDefault(){
-    currentPaintColour = '#000000';
+    currentPaintColour = 'hsl(0,0%,0%)';
     rgbOn = false;
-    transparentOn = false;
+    darkenOn = false;
+    lightenOn = false;
 }
 
 function mouseClick(e){
     e.preventDefault();
     if(rgbOn){
         e.target.style.backgroundColor = setRGBColour();
-    } else if(transparentOn){
-        let alpha = getAlphaValue(e.target.style.backgroundColor);
-        if(alpha < 1){
-            let newBG = increaseTrans(e.target.style.backgroundColor);
-            console.log(newBG)
-            e.target.style.backgroundColor = newBG;
-        }
+    } else if(darkenOn){
+        let selectedCellColourRGB = e.target.style.backgroundColor;
+        e.target.style.backgroundColor = shadeCell(selectedCellColourRGB);  
+    } else if(lightenOn){
+        let selectedCellColourRGB = e.target.style.backgroundColor;
+        e.target.style.backgroundColor = lightenCell(selectedCellColourRGB);
+    } else if(eraseOn){
+        let selectedCellColourRGB = e.target.style.backgroundColor;
+        e.target.style.backgroundColor = lightenCell(selectedCellColourRGB);
     } else{
         e.target.style.backgroundColor = currentPaintColour;
-        console.log('clilc');
+        console.log(e.target.style.backgroundColor);
+        
     } 
 }
 
@@ -73,28 +80,65 @@ function mouseDrag(e){
         if(rgbOn){
             e.target.style.backgroundColor = setRGBColour();     
         } 
-        else if(transparentOn){
-            if(e.target.style.backgroundColor === 'transparent' || e.target.style.backgroundColor === ' '){
-                e.target.style.backgroundColor = '#ffffff';
-            } 
-            let alpha = getAlphaValue(e.target.style.backgroundColor);
-            if(alpha < 1){
-                let newBG = increaseTrans(e.target.style.backgroundColor);
-                console.log(newBG)
-                e.target.style.backgroundColor = newBG;
-            } 
-            
-            
+        else if(darkenOn){
+            let selectedCellColourRGB = e.target.style.backgroundColor;
+            e.target.style.backgroundColor = shadeCell(selectedCellColourRGB);  
         }
-        else e.target.style.backgroundColor = currentPaintColour;
+        else if(lightenOn){
+            let selectedCellColourRGB = e.target.style.backgroundColor;
+            e.target.style.backgroundColor = lightenCell(selectedCellColourRGB);
+        } else if(eraseOn){
+            e.target.style.backgroundColor = currentPaintColour;
+        } else e.target.style.backgroundColor = currentPaintColour;
     }
 }
 
 function rgbMode(){
     if(rgbOn){
         rgbOn = false;
-        currentPaintColour = 'hsl(0,0,0,1)';
-    }else rgbOn = true;
+        currentPaintColour = 'hsl(0,0%,0%)';
+    }else {
+        lightenOn = false;
+        rgbOn = true;
+        darkenOn = false;
+        eraseOn = false;
+    }
+}
+
+function shadingMode(){
+    if(darkenOn){
+        darkenOn = false
+    }
+    else {
+        darkenOn = true;
+        rgbOn = false;
+        lightenOn = false;
+        raseOn = false;
+    }
+}
+
+function lightenMode(){
+    if(lightenOn){
+        lightenOn = false
+    }
+    else {
+        lightenOn = true;
+        rgbOn = false;
+        darkenOn = false;
+        eraseOn = false;
+    }
+}
+
+function eraseMode(){
+    if(eraseOn){
+        eraseOn = false;
+    } else{
+        lightenOn = false;
+        rgbOn = false;
+        darkenOn = false;
+        eraseOn = true;
+        currentPaintColour = 'rgb(255,255,255';
+    }
 }
 
 function setRGBColour(){
@@ -103,24 +147,7 @@ function setRGBColour(){
     return currentPaintColour;
 }
 
-function transparentMode(){
-    if(transparentOn){
-        transparentOn = false
-    }
-    else {
-        transparentOn = true;
-        rgbOn = false;}
-}
 
-function getAlphaValue(rgb){
-    return parseFloat(rgb.split(',')[3]);
-}
-
-function increaseTrans(value){
-    let before = parseFloat(value.split(',')[3]);
-    let after = `rgba(0,0,0, ${before + .1})`;
-    return after;
-}
 
 function setSize(){
     const size = prompt('Set a resolution up to 100');
@@ -137,63 +164,39 @@ function clear(){
     
 }
 
-function ColorLuminance(hex, lum) {
-
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
-
-	return rgb;
+function shadeCell(rgb){
+    let selectedCellColourHSL = convertRGBToHSL(rgb);
+    let currentLightness = Number(selectedCellColourHSL[2]);
+    let newBG = '';
+    if(currentLightness === 0){return newBG = 'rgb(0,0,0)'}
+    else{
+        let newLightness = currentLightness - 5;
+        return `hsl(${Math.round(selectedCellColourHSL[0])},${Math.round(selectedCellColourHSL[1])}%,${Math.round(newLightness)}%)`;
+    }
 }
 
-// function HSLtoHEX(h,s,l){
-//     s /= 100;
-//     l /= 100;
-//     const k = n => (n + h / 30) % 12;
-//     const a = s * Math.min(l, 1 - l);
-//     const f = n =>
-//         l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-//     let r = Math.round(255 * f(0)); 
-//     let g = Math.round(255 * f(8)); 
-//     let b = Math.round(255 * f(4));
+function lightenCell(rgb){
+    let selectedCellColourHSL = convertRGBToHSL(rgb);
+    let currentLightness = Number(selectedCellColourHSL[2]);
+    let newBG = '';
+    if(currentLightness === 100){return newBG = 'rgb(255,255,255)'}
+    else{
+        let newLightness = currentLightness + 5;
+        return `hsl(${Math.round(selectedCellColourHSL[0])},${Math.round(selectedCellColourHSL[1])}%,${Math.round(newLightness)}%)`;
+    }
+}
 
-//     r = r.toString(16);
-//     g = g.toString(16);
-//     b = b.toString(16);
+function convertRGBToHSL(rgb){
+    let rgbValues = stripRGB(rgb);
+    let hslValues = RGBToHSL(Math.round(rgbValues[0]),Math.round(rgbValues[1]),Math.round(rgbValues[2]));
+    return hslValues;
+}
 
-//     if (r.length == 1)
-//         r = "0" + r;
-//     if (g.length == 1)
-//         g = "0" + g;
-//     if (b.length == 1)
-//         b = "0" + b;
-//     console.log("#" + r + g + b);
-//     HEXtoHSL("#" + r + g + b);
-//     //return "#" + r + g + b;
-
-// }
-
-function hslToHex(h, s, l) {//javascript by Witty Wildebeest on Apr 29 2021 Comment
-    l /= 100;
-    const a = s * Math.min(l, 1 - l) / 100;
-    const f = n => {
-      const k = (n + h / 30) % 12;
-      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-      return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
-    };
-    console.log(`#${f(0)}${f(8)}${f(4)}`);
-  }
+function stripRGB(rgb){
+    let pattern = /([0-9]{1,3})/g;
+    let result = rgb.match(pattern);
+    return result;
+}
 
 function stripHSL(hsl){
     let pattern = /[0-9]{1,3}/g;
@@ -201,55 +204,63 @@ function stripHSL(hsl){
     let h = Number(result[0]);
     let s = Number(result[1]);
     let l = Number(result[2]);
-    console.log(hslToHex(h,s,l) + 'yes');
-    
+    console.log(`${h}, ${s}, ${l}`);
+    return l;
 }
-stripHSL('hsl(100,100,50%)');
 
-function HEXtoHSL(hex) {//https://www.html-code-generator.com/javascript/color-converter-script
-    hex = hex.replace(/#/g, '');
-    if (hex.length === 3) {
-        hex = hex.split('').map(function (hex) {
-            return hex + hex;
-        }).join('');
-    }
-    var result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})[\da-z]{0,0}$/i.exec(hex);
-    if (!result) {
-        return null;
-    }
-    var r = parseInt(result[1], 16);
-    var g = parseInt(result[2], 16);
-    var b = parseInt(result[3], 16);
-    r /= 255, g /= 255, b /= 255;
-    var max = Math.max(r, g, b),
-        min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-    if (max == min) {
-        h = s = 0;
-    } else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-        case r:
-            h = (g - b) / d + (g < b ? 6 : 0);
-            break;
-        case g:
-            h = (b - r) / d + 2;
-            break;
-        case b:
-            h = (r - g) / d + 4;
-            break;
-        }
-        h /= 6;
-    }
-    s = s * 100;
-    s = Math.round(s);
-    l = l * 100;
-    l = Math.round(l);
-    h = Math.round(360 * h);
-    console.log(h + ' ' + s + ' ' + l);
-    //return 'hsl(' + h + ' ' + s + ' ' + l + ')';
+function RGBToHSL(r, g, b){ //https://www.30secondsofcode.org/js/s/rgb-to-hsl
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const l = Math.max(r, g, b);
+    const s = l - Math.min(r, g, b);
+    const h = s
+        ? l === r
+        ? (g - b) / s
+        : l === g
+        ? 2 + (b - r) / s
+        : 4 + (r - g) / s
+        : 0;
+    return [
+        Math.round(60 * h < 0 ? 60 * h + 360 : 60 * h),
+        100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+        (100 * (2 * l - s)) / 2,
+    ];
 }
+
+function HSLToRGB(h,s,l) {
+// Must be fractions of 1
+s /= 100;
+l /= 100;
+
+let c = (1 - Math.abs(2 * l - 1)) * s,
+    x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+    m = l - c/2,
+    r = 0,
+    g = 0,
+    b = 0;
+
+    if (0 <= h && h < 60) {
+        r = c; g = x; b = 0;  
+      } else if (60 <= h && h < 120) {
+        r = x; g = c; b = 0;
+      } else if (120 <= h && h < 180) {
+        r = 0; g = c; b = x;
+      } else if (180 <= h && h < 240) {
+        r = 0; g = x; b = c;
+      } else if (240 <= h && h < 300) {
+        r = x; g = 0; b = c;
+      } else if (300 <= h && h < 360) {
+        r = c; g = 0; b = x;
+      }
+      r = Math.round((r + m) * 255);
+      g = Math.round((g + m) * 255);
+      b = Math.round((b + m) * 255);
+    
+      return "rgb(" + r + "," + g + "," + b + ")";
+}
+
 
 window.addEventListener('load', initialise);
 
+stripHSL('hsl(100,200,20%)');
