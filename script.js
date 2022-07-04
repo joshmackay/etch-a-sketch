@@ -1,17 +1,19 @@
 const GRID_WIDTH = document.querySelector('#grid').offsetWidth;
-
 const DEFAULT_GRID_SIZE = 16;
 const DEFAULT_BG_COLOUR = 'hsl(0,100%,100%)';
 let currentGridSize = 16;
 const clearButton = document.querySelector('#clear-button').addEventListener('click', function(){createGrid(currentGridSize)});
-const setSizeButton = document.querySelector('#size-button').addEventListener('click', setSize);
+
+//set up event listeners for buttons (on click), slider (on change) and colour picker (on change)
 const defaultButton = document.querySelector('#default-button').addEventListener('click', setDefault);
 const rgbButton = document.querySelector('#rgb-button').addEventListener('click', rgbMode);
 const shadingButton = document.querySelector('#shading').addEventListener('click', shadingMode);
 const lightenButton = document.querySelector('#lighten').addEventListener('click', lightenMode);
 const eraseButton = document.querySelector('#erase-button').addEventListener('click', eraseMode);
 const colourPicker = document.querySelector('#color').addEventListener('change', colourPickerValue);
+const sizeSlider = document.querySelector('.slider').addEventListener('change', setSize);
 
+//initialise default values for colours and modes
 let bgColour = 'hsl(0,100%,100%)';
 let rgbOn = false;
 let darkenOn = false;
@@ -20,15 +22,17 @@ let eraseOn = false;
 let currentPaintColour = `hsl(0,0%, 0%)`;
 let functionMode = 'default';
 
-
+//function to create the grid
 function createGrid(size){ //function to create a grid based on row and col values
-    clear();
-    for(let r = 0; r < size; r++){
+    clear(); //wipe existing rows
+
+    //nested for loop, generates 1 row, fills it with cells then generates the next
+    for(let r = 0; r < size; r++){ 
         const row = document.createElement('div');
         row.className = 'row';
         row.setAttribute('draggable','false');
         for(let c = 0; c < size; c++){
-            
+            //sets cell width and height based on grid container width and height
             let cellWidth = ((GRID_WIDTH)/size);
             let cellHeight = ((GRID_WIDTH)/size);
             const cell = document.createElement('div');
@@ -36,27 +40,31 @@ function createGrid(size){ //function to create a grid based on row and col valu
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
             cell.style.backgroundColor = bgColour;
+            //draws the cell grid lines.  The if statements prevents overlap of cell border and grid container border
             if(r !== 0){
                 cell.classList.add('cell-border-top');
             }
             if(c !== 0){
                 cell.classList.add('cell-border-left')
             }
+            //sets event listensers for click and click-drag and appends cell to the row
             cell.setAttribute('draggable', 'false');
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
             row.appendChild(cell);
         }
+        //appends the row to the grid container
         document.querySelector('#grid').appendChild(row);
     }
 }
 
+//sets initial values.  Is called when even listener for window on load fires
 function initialise(){
-    currentPaintColour = 'hsl(0,0%,0%)';
-    rgbOn = false;
+    setDefault();
     createGrid(DEFAULT_GRID_SIZE);
 }
 
+//sets default conditions either when initialised, or called when window loads
 function setDefault(){
     currentPaintColour = 'hsl(0,0%,0%)';
     rgbOn = false;
@@ -65,10 +73,14 @@ function setDefault(){
     eraseOn = false;
 }
 
+//this is called when the mouse is clicked on a cell, uses on click listener
+//cell colour is dependant on which mode is active
 function mouseClick(e){
     e.preventDefault();
     if(rgbOn){
         e.target.style.backgroundColor = setRGBColour();
+    //if shading is active, gets the current cell colour and calls the shadeCell funciton 
+    //to calculate and return the new colour value
     } else if(darkenOn){
         let selectedCellColourRGB = e.target.style.backgroundColor;
         e.target.style.backgroundColor = shadeCell(selectedCellColourRGB);  
@@ -85,6 +97,9 @@ function mouseClick(e){
     } 
 }
 
+//function called with mouse enter event listener on cells.
+//allows for mouse click and drag functionality
+//performs the same function as on click function, but occurs when mouse enters cell.
 function mouseDrag(e){
     if(e.buttons > 0){
         if(rgbOn){
@@ -103,6 +118,7 @@ function mouseDrag(e){
     }
 }
 
+//flag to toggle rgb mode when button is clicked
 function rgbMode(){
     if(rgbOn){
         rgbOn = false;
@@ -115,6 +131,7 @@ function rgbMode(){
     }
 }
 
+//flag to toggle shading mode when button is clicked
 function shadingMode(){
     if(darkenOn){
         darkenOn = false
@@ -127,6 +144,7 @@ function shadingMode(){
     }
 }
 
+//flag to toggle lighten mode when button clicked.
 function lightenMode(){
     if(lightenOn){
         lightenOn = false
@@ -139,6 +157,7 @@ function lightenMode(){
     }
 }
 
+//flag to toggle erase mode 
 function eraseMode(){
     if(eraseOn){
         eraseOn = false;
@@ -151,27 +170,35 @@ function eraseMode(){
     }
 }
 
+//sets the random rgb colour for rgb mode
+//i use hsl here as I am able to easily produce only bright colours by having l and s fixed.
+//hue only needs to be randomly generated
 function setRGBColour(){
     let randomHue = Math.floor(Math.random()*360);
     currentPaintColour = `hsl(${randomHue}, 100%, 50%)`;
     return currentPaintColour;
 }
 
-
-
-function setSize(){
-    const size = prompt('Set a resolution up to 100');
+//this is called when the size slider is adjusted
+//an event listener calls this function and gets the value of the slider
+//the value is then passed to createGrid and a new grid is generated with the new size
+function setSize(e){
+    const size = e.target.value;
     if(size != null && size > 0 && size < 101){
         currentGridSize = size;
         createGrid(size);
     }
 }
 
+//clears any active modes with setDefault
+//then sets the current paint value to the value selected on the colour picker
 function colourPickerValue(e){
     setDefault();
     currentPaintColour = e.target.value;
 }
 
+//clears the grid back to white
+//but maintains any modes that are active
 function clear(){
     let existingElements = document.querySelector('#grid');
     existingElements.style.backgroundColor = bgColour;
@@ -179,17 +206,26 @@ function clear(){
     
 }
 
+//function used to shade the cells
+//i decided to use HSL "L" value for darkening and lightening as it made the calulations simpler.
+//the function takes the existing colour of the cell in the full RGB string format ie. RGB(100,200,50)
+//it then passes the string into covertRGBToHSL to extract the r g b values as an array
 function shadeCell(rgb){
     let selectedCellColourHSL = convertRGBToHSL(rgb);
+    //stores the L value in a variable
     let currentLightness = Number(selectedCellColourHSL[2]);
     let newBG = '';
+    //if lightness is already 0, the cell is coloured black
     if(currentLightness === 0){return newBG = 'rgb(0,0,0)'}
+    //otherwise, L is reduced by 5 (increments of 5%) and the full HSL string is retured
     else{
         let newLightness = currentLightness - 5;
         return `hsl(${Math.round(selectedCellColourHSL[0])},${Math.round(selectedCellColourHSL[1])}%,${Math.round(newLightness)}%)`;
     }
 }
 
+//lighten works the same as darken but in reverse.  It adds 5% to the existing value. 
+//And the cell is set to white if L is already at 100%
 function lightenCell(rgb){
     let selectedCellColourHSL = convertRGBToHSL(rgb);
     let currentLightness = Number(selectedCellColourHSL[2]);
@@ -201,27 +237,32 @@ function lightenCell(rgb){
     }
 }
 
+//this starts the rgb to hsl conversion process and returns the array of HSL values to the lighten and darken functions
 function convertRGBToHSL(rgb){
     let rgbValues = stripRGB(rgb);
     let hslValues = RGBToHSL(Math.round(rgbValues[0]),Math.round(rgbValues[1]),Math.round(rgbValues[2]));
     return hslValues;
 }
 
+//used to strip the r g b values from an RGB string using Regex
 function stripRGB(rgb){
     let pattern = /([0-9]{1,3})/g;
     let result = rgb.match(pattern);
     return result;
 }
 
+//pulls the h s l values from a HSL string using regex, only returns the l value
 function stripHSL(hsl){
     let pattern = /[0-9]{1,3}/g;
     let result = hsl.match(pattern);
     let h = Number(result[0]);
     let s = Number(result[1]);
     let l = Number(result[2]);
-    console.log(`${h}, ${s}, ${l}`);
     return l;
 }
+
+//this is the maths to convert rgb into the equivalent hsl.
+//i used the code provided at the website reference as the maths is a bit over my head.
 
 function RGBToHSL(r, g, b){ //https://www.30secondsofcode.org/js/s/rgb-to-hsl
     r /= 255;
@@ -243,7 +284,10 @@ function RGBToHSL(r, g, b){ //https://www.30secondsofcode.org/js/s/rgb-to-hsl
     ];
 }
 
-function HSLToRGB(h,s,l) {
+//This is also form another source, the maths is a bit over my head at this stage.
+//convert values of r,g,b to values of h,s,l.  Values must be stripped from
+//standard format with stripHSH function.  
+function HSLToRGB(h,s,l) {//https://css-tricks.com/converting-color-spaces-in-javascript/
 // Must be fractions of 1
 s /= 100;
 l /= 100;
@@ -275,7 +319,5 @@ let c = (1 - Math.abs(2 * l - 1)) * s,
       return "rgb(" + r + "," + g + "," + b + ")";
 }
 
-
+//this listens for the page load and runs the initialise function
 window.addEventListener('load', initialise);
-
-stripHSL('hsl(100,200,20%)');

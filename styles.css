@@ -32,7 +32,23 @@ h1{
     gap: 20px;
 }
 
-button, input{
+.flex-row{
+    display: flex;
+    gap: 20px;
+}
+
+.slider{
+    height: 100%;
+    width: 50px;
+    -webkit-appearance: slider-vertical
+}
+
+.spacer{
+    height: 100%;
+    width: 50px;
+}
+
+button{
     background-color: white;
     border: 0px solid black;
     border-radius: 5px;
@@ -54,6 +70,7 @@ button, input{
 }
 
 #grid{
+    
     width: 500px;
     height: 500px;
     box-sizing: content-box;  

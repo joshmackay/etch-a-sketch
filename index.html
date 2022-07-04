@@ -12,9 +12,14 @@
     <div class="col-container" draggable="false">
         <div id="frame">
             <h1>ETCH-A-SKETCH</h1>
-            <div id="grid" draggable="false"></div>
+            <div class="flex-row">
+                <div>
+                    <input type="range" min="1" max="100" value="16" class="slider" orient="vertical">
+                </div>
+                <div id="grid" draggable="false"></div>
+                <div class="spacer"></div>
+            </div>
             <div id="controls">
-                <button id="size-button">Set Size</button>
                 <button id="default-button">Default</button>
                 <button id="rgb-button">RGB</button>
                 <button id="shading">Shading</button>
