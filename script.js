@@ -219,7 +219,7 @@ function shadeCell(rgb){
     if(currentLightness === 0){return newBG = 'rgb(0,0,0)'}
     //otherwise, L is reduced by 5 (increments of 5%) and the full HSL string is retured
     else{
-        let newLightness = currentLightness - 5;
+        let newLightness = currentLightness - 10;
         return `hsl(${Math.round(selectedCellColourHSL[0])},${Math.round(selectedCellColourHSL[1])}%,${Math.round(newLightness)}%)`;
     }
 }
@@ -232,7 +232,7 @@ function lightenCell(rgb){
     let newBG = '';
     if(currentLightness === 100){return newBG = 'rgb(255,255,255)'}
     else{
-        let newLightness = currentLightness + 5;
+        let newLightness = currentLightness + 10;
         return `hsl(${Math.round(selectedCellColourHSL[0])},${Math.round(selectedCellColourHSL[1])}%,${Math.round(newLightness)}%)`;
     }
 }
