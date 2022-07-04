@@ -1,4 +1,5 @@
 const GRID_WIDTH = document.querySelector('#grid').offsetWidth;
+
 const DEFAULT_GRID_SIZE = 16;
 const DEFAULT_BG_COLOUR = 'hsl(0,100%,100%)';
 let currentGridSize = 16;
@@ -27,13 +28,20 @@ function createGrid(size){ //function to create a grid based on row and col valu
         row.className = 'row';
         row.setAttribute('draggable','false');
         for(let c = 0; c < size; c++){
-            let cellWidth = ((GRID_WIDTH-2)/size);
-            let cellHeight = ((GRID_WIDTH-2)/size);
+            
+            let cellWidth = ((GRID_WIDTH)/size);
+            let cellHeight = ((GRID_WIDTH)/size);
             const cell = document.createElement('div');
-            cell.classList.add = 'cell';
+            cell.classList.add('cell');
             cell.style.width = cellWidth + 'px';
             cell.style.height = cellHeight + 'px';
             cell.style.backgroundColor = bgColour;
+            if(r !== 0){
+                cell.classList.add('cell-border-top');
+            }
+            if(c !== 0){
+                cell.classList.add('cell-border-left')
+            }
             cell.setAttribute('draggable', 'false');
             cell.addEventListener('mousedown', mouseClick);
             cell.addEventListener('mouseenter', mouseDrag);
