@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
-</head>
-<body draggable="false">
-    <div class="col-container" draggable="false">
-        <div id="frame">
-            <h1>ETCH-A-SKETCH</h1>
-            <div class="flex-row">
-                <div>
-                    <input type="range" min="1" max="100" value="16" class="slider" orient="vertical">
-                </div>
-                <div id="grid" draggable="false"></div>
-                <div class="spacer"></div>
-            </div>
-            <div id="controls">
-                <button id="default-button">Default</button>
-                <button id="rgb-button">RGB</button>
-                <button id="shading">Shading</button>
-                <button id="lighten">Lighten</button>
-                <input type="color" id="color" name="color" value="#000000">
-                <button id="erase-button">Erase</button>
-                <button id="clear-button">Clear</button>
-            </div>
-        </div>
-    </div>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="script.js" defer></script>
+	</head>
+	<body draggable="false">
+		<div class="col-container" draggable="false">
+			<div id="frame">
+				<h1>ETCH-A-SKETCH</h1>
+				<div class="flex-row">
+					<div>
+						<input
+							type="range"
+							min="1"
+							max="100"
+							value="16"
+							class="slider"
+							orient="vertical" />
+					</div>
+					<div id="grid" draggable="false"></div>
+					<div class="spacer"></div>
+				</div>
+				<div id="controls">
+					<button id="default-button">Default</button>
+					<button id="rgb-button">RGB</button>
+					<button id="shading">Shading</button>
+					<button id="lighten">Lighten</button>
+					<input type="color" id="color" name="color" value="#000000" />
+					<button id="erase-button">Erase</button>
+					<button id="clear-button">Clear</button>
+				</div>
+			</div>
+		</div>
+		<link rel="stylesheet" href="styles.css" />
+	</body>
 </html>
